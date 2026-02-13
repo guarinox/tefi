@@ -3,14 +3,14 @@ const yesBtn = document.getElementById('yesBtn');
 const noBtn = document.getElementById('noBtn');
 const celebration = document.getElementById('celebration');
 
-// Abrir el sobre al hacer clic
+// Abrir el sobre al hacer clic (Solo abrir)
 envelope.addEventListener('click', () => {
-    envelope.classList.toggle('open');
+    envelope.classList.add('open');
 });
 
 // Botón Sí
 yesBtn.addEventListener('click', (e) => {
-    e.stopPropagation(); // Evitar que se cierre el sobre al hacer clic en el botón
+    e.stopPropagation(); // Evitar cualquier propagación
     celebration.classList.remove('hidden');
     
     // Disparar confeti
@@ -35,17 +35,30 @@ yesBtn.addEventListener('click', (e) => {
     }, 250);
 });
 
-// Función para mover el botón No
+// Función para mover el botón No con límites calculados
 function moveButton() {
-    // Obtener dimensiones de la ventana y del botón
+    // Dimensiones de la ventana
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
+    
+    // Dimensiones del botón
     const btnWidth = noBtn.offsetWidth;
     const btnHeight = noBtn.offsetHeight;
+    
+    // Margen de seguridad para que no quede pegado al borde o fuera
+    const margin = 20; // 20px de margen
 
-    // Calcular posición aleatoria segura (dentro de la pantalla)
-    const newX = Math.random() * (windowWidth - btnWidth);
-    const newY = Math.random() * (windowHeight - btnHeight);
+    // Calcular el espacio disponible (área segura)
+    const maxX = windowWidth - btnWidth - margin;
+    const maxY = windowHeight - btnHeight - margin;
+    
+    // Asegurar que minX/minY no sean mayores que maxX/maxY (por si la pantalla es muy pequeña)
+    const safeMaxX = Math.max(margin, maxX);
+    const safeMaxY = Math.max(margin, maxY);
+
+    // Posición aleatoria dentro de los límites
+    const newX = Math.random() * (safeMaxX - margin) + margin;
+    const newY = Math.random() * (safeMaxY - margin) + margin;
     
     noBtn.style.position = 'fixed';
     noBtn.style.left = `${newX}px`;
@@ -54,15 +67,12 @@ function moveButton() {
 
 // Eventos para el botón No (PC y Móvil)
 noBtn.addEventListener('mouseover', moveButton);
-noBtn.addEventListener('touchstart', (e) => {
-    e.preventDefault(); // Evitar click
-    moveButton();
-});
-
-// Por si acaso logran hacer click
 noBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
     e.preventDefault();
-    alert('¡Esa opción no está disponible! Intenta atraparme jaja ❤️');
+    e.stopPropagation();
+    moveButton(); // Si logran clickear, se mueve
+});
+noBtn.addEventListener('touchstart', (e) => {
+    // e.preventDefault(); // Comentado para permitir scroll si no tocan el boton exactamente, pero el boton se ira
     moveButton();
 });
