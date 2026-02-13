@@ -11,6 +11,9 @@ body {
 
 .container {
     position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .envelope-wrapper {
@@ -25,10 +28,8 @@ body {
     width: 300px;
     height: 200px;
     background: #ff5e5e; 
-    /* El sobre base */
 }
 
-/* La solapa triangular superior */
 .envelope::before {
     content: '';
     position: absolute;
@@ -38,10 +39,9 @@ body {
     border-right: 150px solid transparent;
     border-left: 150px solid transparent;
     transform-origin: top;
-    transition: transform 0.5s ease-in-out 0.5s; /* Delay para que primero salga la carta si fuera al reves, pero aqui es abrir */
+    transition: transform 0.5s ease-in-out 0.5s;
 }
 
-/* Los triangulos de los lados que forman el sobre cerrado visualmente */
 .envelope::after {
     content: '';
     position: absolute;
@@ -55,7 +55,6 @@ body {
     bottom: 0;
 }
 
-/* Carta interior */
 .letter {
     position: absolute;
     right: 20px;
@@ -68,17 +67,21 @@ body {
     box-shadow: 0 0 5px rgba(0,0,0,0.2);
     padding: 20px;
     box-sizing: border-box;
-    z-index: 1; /* Detrás de las solapas frontales */
+    z-index: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
+/* Ocultar texto inicialmente para que no se vea a través del sobre */
 .letter .text {
     font-family: 'Dancing Script', cursive;
     color: #333;
     font-size: 1.2rem;
+    opacity: 0; 
+    transition: opacity 0.5s;
+    transition-delay: 0s;
 }
 
 .letter .text strong {
@@ -120,7 +123,6 @@ button {
     color: #333;
 }
 
-/* Corazón sellando el sobre */
 .heart {
     position: absolute;
     top: 50%;
@@ -155,26 +157,30 @@ button {
     top: 0;
 }
 
-/* Clases para la animación de apertura */
 .envelope-wrapper.open .envelope::before {
     transform: rotateX(180deg);
-    z-index: 0; /* Se va detrás de la carta */
+    z-index: 0;
     transition-delay: 0s;
 }
 
 .envelope-wrapper.open .heart {
-    display: none; /* Desaparece el sello */
+    display: none;
 }
 
 .envelope-wrapper.open .letter {
-    bottom: 100px; /* Sube la carta */
-    z-index: 3; /* Se pone por encima del sobre */
-    transform: scale(1.2); /* Se hace un poco más grande */
-    height: 300px; /* Se expande */
+    bottom: 100px;
+    z-index: 3;
+    transform: scale(1.2);
+    height: 300px;
     transition-delay: 0.5s;
 }
 
-/* Pantalla de celebración */
+/* Mostrar texto cuando la carta esté abierta */
+.envelope-wrapper.open .letter .text {
+    opacity: 1;
+    transition-delay: 1s;
+}
+
 #celebration {
     position: fixed;
     top: 0;
@@ -198,4 +204,21 @@ button {
 
 .hidden {
     display: none !important;
+}
+
+/* Responsive para celulares */
+@media (max-width: 600px) {
+    .envelope-wrapper {
+        transform: scale(0.85);
+    }
+    
+    .envelope-wrapper.open .letter {
+        transform: scale(1.05);
+        bottom: 60px;
+    }
+
+    #celebration h1 {
+        font-size: 2rem;
+        padding: 0 20px;
+    }
 }

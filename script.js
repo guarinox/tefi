@@ -30,23 +30,39 @@ yesBtn.addEventListener('click', (e) => {
       }
 
       var particleCount = 50 * (timeLeft / duration);
-      // since particles fall down, start a bit higher than random
       confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.1, 0.3), y: Math.random() - 0.2 } }));
       confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.7, 0.9), y: Math.random() - 0.2 } }));
     }, 250);
 });
 
-// Botón No (Escurridizo)
-noBtn.addEventListener('mouseover', () => {
-    const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-    const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+// Función para mover el botón No
+function moveButton() {
+    // Obtener dimensiones de la ventana y del botón
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const btnWidth = noBtn.offsetWidth;
+    const btnHeight = noBtn.offsetHeight;
+
+    // Calcular posición aleatoria segura (dentro de la pantalla)
+    const newX = Math.random() * (windowWidth - btnWidth);
+    const newY = Math.random() * (windowHeight - btnHeight);
     
     noBtn.style.position = 'fixed';
-    noBtn.style.left = `${x}px`;
-    noBtn.style.top = `${y}px`;
+    noBtn.style.left = `${newX}px`;
+    noBtn.style.top = `${newY}px`;
+}
+
+// Eventos para el botón No (PC y Móvil)
+noBtn.addEventListener('mouseover', moveButton);
+noBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault(); // Evitar click
+    moveButton();
 });
 
+// Por si acaso logran hacer click
 noBtn.addEventListener('click', (e) => {
     e.stopPropagation();
+    e.preventDefault();
     alert('¡Esa opción no está disponible! Intenta atraparme jaja ❤️');
+    moveButton();
 });
